@@ -38,10 +38,37 @@ Install dependencies:
 
 
 ## Usage
+Run the application with:  
+```sh
+ python prober.py --cve CVE-2025-21893 --ai-model openai
 
-Run the application with:
+### You can specificy three flags for specific data.
 
-`python prober.py --cve CVE-2025-21893 --ai-model openai`  
+### Required Arguments  
+- **`--cve` (REQUIRED)**:  
+  Specify the CVE identifier. Prober supports all CVE formats from [OSV.dev](https://osv.dev/).  
+  **Example:**  
+  ```sh
+  --cve CVE-2025-21893
+
+- **`--ai-model` (REQUIRED)**:
+Select the AI model to use. Available options are Gemini and OpenAI.
+  1. Gemini Model: `gemini-1.5-flash-002`
+  2. OpenAI Model: `gpt-4-turbo`
+  
+  **Example:**
+  ```sh
+  --ai-model openai
+
+### Optional Arguments
+- **`--source` (OPTIONAL)**:
+Specify the data source when OSV lacks records for a vulnerability. If set, Prober will use the NVD API to fetch data.
+Available options: 'osv' (default) or 'nvd'.
+
+  **Example:**
+  ```sh 
+   --source osv
+
 
 ## Configuration
 
