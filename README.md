@@ -26,16 +26,16 @@ Feature 3
 
 1. Clone the repository:
 
-`git clone https://github.com/yourusername/your-repo.git`
+`git clone https://github.com/ejaz629/Prober-M1.git`
 
 2. Navigate to the project directory:
 
-`cd your-repo`
+`cd Prober-M1`
 
 Install dependencies:
 
-pip install -r requirements.txt  # Python example
-npm install  # Node.js example
+`pip install beautifulsoup4 openai google-cloud-aiplatform requests regex google-generativeai google-auth google-auth-oauthlib google-auth-httplib2`
+
 
 🚀 Usage
 
