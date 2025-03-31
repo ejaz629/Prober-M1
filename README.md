@@ -1,19 +1,19 @@
-#PROBER-M1: An Algorithm for Vulnerability Fixes and Relevant Data Identification
+# PROBER-M1: An Algorithm for Vulnerability Fixes and Relevant Data Identification
 
-**Overview**
+## Overview 
 Prober is an AI-powered tool designed to identify and extract vulnerability-fixing commits in open-source projects. Detecting patch or fix commits is crucial, as it provides users with essential information on whether a security issue has been addressed.
 
 In addition to identifying fix commits, Prober also provides:
 
-Fixed versions of the software
+- Fixed versions of the software
 
-Affected source files and functions
+- Affected source files and functions
 
-AI-generated, focused vulnerability descriptions
+- AI-generated, focused vulnerability descriptions
 
 Prober leverages large language models (LLMs) such as OpenAI and Gemini to enhance its analysis. It sources vulnerability data from trusted repositories, including the National Vulnerability Database (NVD) and Open Source Vulnerabilities (OSV) database.
 
-🚀 Features
+## Features
 
 Feature 1
 
@@ -22,25 +22,15 @@ Feature 2
 Feature 3
  Installation
 
-Prerequisites
+## Steps
 
-Ensure you have the following installed:
+1. Clone the repository:
 
-Python 3.x / Node.js / Other relevant dependencies
+`git clone https://github.com/yourusername/your-repo.git`
 
-Git
+2. Navigate to the project directory:
 
-Any additional tools
-
-Steps
-
-Clone the repository:
-
-git clone https://github.com/yourusername/your-repo.git
-
-Navigate to the project directory:
-
-cd your-repo
+`cd your-repo`
 
 Install dependencies:
 
