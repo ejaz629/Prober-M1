@@ -68,9 +68,37 @@ Available options: 'osv' (default) or 'nvd'.
   ```sh 
    --source osv
 
-
 ## Configuration
 
 Add any necessary environment variables and API keys. Please check config.py for the required data.
+
+### Output  
+
+After running the command, Prober will generate structured CVE analysis. Example output:  
+
+```json
+--- Extracted CVE Information ---
+{
+  "cve_id": "CVE-2025-21893",
+  "prober-generated-cve-desc": "CVE-2025-21893: In the Linux kernel, the key_put() function allows access to a key after its reference count has been reduced to 0, leading to a use-after-free (UAF) vulnerability. This occurs because quota reclamation is performed in key_put() after the key's usage is reduced to 0, accessing the key after it may have been destroyed by the garbage collector thread.",
+  "prober-predicted-repo": "None",
+  "osv_cve_desc": "In the Linux kernel, the following vulnerability has been resolved:\n\nkeys: Fix UAF in key_put()\n\nOnce a key's reference count has been reduced to 0, the garbage collector\nthread may destroy it at any time and so key_put() is not allowed to touch\nthe key after that point. The most key_put() is normally allowed to do is\nto touch key_gc_work as that's a static global variable.\n\nHowever, in an effort to speed up the reclamation of quota, this is now\ndone in key_put() once the key's usage is reduced to 0 - but now the code\nis looking at the key after the deadline, which is forbidden.\n\nFix this by using a flag to indicate that a key can be gc'd now rather than\nlooking at the key's refcount in the garbage collector.",
+  "osv-git-repo": null,
+  "analysed_pages": [
+    "https://git.kernel.org/stable/c/f6a3cf833188e897c97028cd7b926e3f2cb1a8c0",
+    "https://git.kernel.org/stable/c/75845c6c1a64483e9985302793dbf0dfa5f71e32",
+    "https://security-tracker.debian.org/tracker/CVE-2025-21893",
+    "https://git.kernel.org/stable/c/6afe2ea2daec156bd94ad2c5a6f4f4c48240dcd3"
+  ],
+  "fix_commits": "https://git.kernel.org/linus/75845c6c1a64483e9985302793dbf0dfa5f71e32",
+  "fixed_versions": ["5.10.223-1", "5.10.234-1", "6.1.128-1", "6.1.129-1", "6.12.21-1"],
+  "fix_exists": "Yes",
+  "vulnerable_artifacts": {
+    "vulnerable_files": ["include/linux/key.h", "security/keys/gc.c", "security/keys/key.c"],
+    "vulnerable_functions": ["key_put"]
+  }
+}
+
+
 
 
