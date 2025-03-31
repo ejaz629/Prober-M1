@@ -74,7 +74,7 @@ Add any necessary environment variables and API keys. Please check config.py for
 
 ### Output  
 
-After running the command, Prober will generate structured CVE analysis. Example output:  
+After running the command `python prober.py --cve CVE-2025-21893 --source osv --ai-model gemini`, Prober will generate structured CVE analysis. Example output:  
 
 ```json
 --- Extracted CVE Information ---
