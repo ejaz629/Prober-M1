@@ -39,8 +39,7 @@ Install dependencies:
 
 ## Usage
 Run the application with:  
-```sh
- python prober.py --cve CVE-2025-21893 --ai-model openai
+`python prober.py --cve CVE-2025-21893 --source osv --ai-model openai`
 
 ### You can specificy three flags for specific data.
 
