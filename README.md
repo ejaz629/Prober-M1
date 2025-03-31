@@ -34,20 +34,17 @@ Feature 3
 
 Install dependencies:
 
-`pip install beautifulsoup4 openai google-cloud-aiplatform requests regex google-generativeai google-auth google-auth-oauthlib google-auth-httplib2`
+`pip install beautifulsoup4 openai google-cloud-aiplatform requests regex google-generativeai google-auth google-auth-oauthlib google-auth-httplib2 argparse`
 
 
-🚀 Usage
+## Usage
 
 Run the application with:
 
-python main.py  # Python example
-npm start  # Node.js example
+`python prober.py --cve CVE-2025-21893 --ai-model openai`  
 
-📜 Configuration
+## Configuration
 
-Add any necessary environment variables.
-
-Modify config.json or .env if needed.
+Add any necessary environment variables and API keys. Please check config.py for the required data.
 
 
