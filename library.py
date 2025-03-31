@@ -19,6 +19,32 @@ model = GenerativeModel(MODEL_ID)
 client = OpenAI(api_key=AppConfig.OPENAI_API_KEY)
 
 
+def get_vulnerability_prompt(pages_content: str) -> str:
+    """
+    Generates the common prompt for extracting vulnerability-related information.
+    """
+    return f"""
+        Extract the following information from the CVE description:
+
+        1. Git fix commit hash or fix commit link that fixes the vulnerability. Make sure the fix commit is a link, not just a hash. Also mention the pull request link that fixes the vulnerability, if it exists. If no such information is available, reply 'None'. Name the key as "fix_commit".
+
+        2. Fixed version after the fix/patches commit is applied, no other words should be included with version. Return in a list format, if available; otherwise reply 'None'. If more than one version is returned, order them from lowest to highest version number. Name the list as "fixed_versions".
+
+        3. Confirm whether a fix for the vulnerability exists. Reply with 'Yes' if the fix is mentioned, otherwise reply 'No'. Name the key as "fix_exists".
+
+        4. Briefly describe the vulnerability along with the CVE ID. Ensure the CVE ID is included in the description. Name the key as "vulnerability_details".
+
+        5. Based on the provided data, extract the vulnerable source files, vulnerable functions by considering the CVE ID. Name the key as "vulnerable_artifacts".
+
+        6. Based on the provided data, extract the project repo URL (e.g., GitHub project URL or any other URL pointing to the open-source project URL). Name the key as "repo". If no project URL is available, reply "None".
+
+        Please provide the response in the form of a Python dictionary. It should begin with "{{" and end with "}}".
+        The dictionary should have the following keys: "fix_commit", "fixed_versions", "fix_exists", "vulnerability_details", "vulnerable_artifacts", and "repo". The response should not have any markdown delimiters. Just dictionary string is needed.
+
+        Git content: "{pages_content}"
+    """
+
+
 def gemini_generate_vulnerability_response(pages_content: str):
     """
     This function takes a user input prompt and returns the AI-generated response
@@ -53,38 +79,34 @@ def gemini_generate_vulnerability_response(pages_content: str):
         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.OFF,
     }
 
-    # Set contents to send to the model
-    prompt_text = f"""
-        Extract the following information from the CVE description:
-
-        1. Git fix commit hash or fix commit link that fixes the vulnerability. Make sure the fix commit is a link, not just a hash. Also mention the pull request link that fixes the vulnerability, if it exists. If no such information is available, reply 'None'. Name the key as "fix_commit".
-
-        2. Fixed version after the fix/patches commit is applied, no other words should be included with version. Return in a list format, if available; otherwise reply 'None'. If more than one version is returned, order them from lowest to highest version number. Name the list as "fixed_versions".
-        3. Confirm whether a fix for the vulnerability exists. Reply with 'Yes' if the fix is mentioned, otherwise reply 'No'. Name the key as "fix_exists".
-
-        4. Briefly describe the vulnerability along with the CVE ID. Ensure the CVE ID is included in the description. Name the key as "vulnerability_details".
-        
-        5. Based on the provided data, extract the vulnerable source files, vulnerable functions by considering the CVE ID. Name the key as "vulnerable artifacts".
-        
-        6. Based on the provided data, extract the project repo URL (e.g., GitHub project URL or any other URL pointing to the open-source project URL. Name the key as "repo". If not project URL not available, reply "None".  
-        
-        Please provide the response in the form of a Python dictionary. It should begin with "{{" and end with "}}".
-        The dictionary should have the following keys: "fix_commit", "fixed_versions", "fix_exists", "vulnerability_details", "vulnerable artifacts", and "repo". The response should not have any markdown delimiters. Just dictionary string is needed.
-
-
-        Git content: "{pages_content}"
-        """
-    contents = [prompt_text]
+    prompt_text = get_vulnerability_prompt(pages_content)
 
     # Prompt the model to generate content
     response = example_model.generate_content(
-        contents,
+        prompt_text,
         generation_config=gemini_generation_config,
         safety_settings=safety_settings,
     )
 
     # Return the model's response
     return response.text
+
+
+def openai_generate_vulnerability_response(pages_text):
+    prompt = get_vulnerability_prompt(pages_text)
+
+    # Call the OpenAI API
+    response = client.chat.completions.create(model="gpt-4-turbo", temperature=0.1,
+                                              messages=[
+                                                  {"role": "system", "content": "You are a helpful assistant."},
+                                                  {"role": "user", "content": prompt}
+                                              ],
+                                              max_tokens=500)
+
+    # Extract the response
+    # Make sure you do not return date, hash or any other text other than the version number.
+    extracted_info = response.choices[0].message.content
+    return extracted_info
 
 
 def post_process_llm_generated_content(text):
@@ -481,42 +503,6 @@ def extract_cve_data(cve_id):
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON for {cve_id}: {e}")
         return None, None
-
-
-def openai_generate_vulnerability_response(pages_text):
-    prompt = f"""
-        Extract the following information from the CVE description:
-         
-        1. Git fix commit hash or fix commit link that fixes the vulnerability. Make sure the fix commit is a link, not just a hash. Also mention the pull request link that fixes the vulnerability, if it exists. If no such information is available, reply 'None'. Name the key as "fix_commit".
-
-        2. Fixed version after the fix/patches commit is applied, no other words should be included with version. Return in a list format, if available; otherwise reply 'None'. If more than one version is returned, order them from lowest to highest version number. Name the list as "fixed_versions".
-        
-        3. Confirm whether a fix for the vulnerability exists. Reply with 'Yes' if the fix is mentioned, otherwise reply 'No'. Name the key as "fix_exists".
-
-        4. Briefly describe the vulnerability along with the CVE ID. Also mentioned what causes it. Ensure the CVE ID is included in the description. Name the key as "vulnerability_details".
-        
-        5. Based on the provided data, extract the vulnerable source files, vulnerable functions by considering the CVE ID. Name the key as "vulnerable artifacts".
-
-        6. Based on the provided data, extract the project repo URL (e.g., GitHub project URL or any other URL pointing to the open-source project URL. Name the key as "repo". If not project URL not available, reply "None".
-        
-        Please provide the response in the form of a Python dictionary. It should begin with "{{" and end with "}}".
-        The dictionary should have the following keys: "fix_commit", "fixed_versions", "fix_exists", "vulnerability_details", "vulnerable artifacts", and "repo". The response should not have any markdown delimiters. Just dictionary string is needed.
-
-        Git content: {pages_text}
-    """
-
-    # Call the OpenAI API
-    response = client.chat.completions.create(model="gpt-4-turbo", temperature=0.1,
-                                              messages=[
-                                                  {"role": "system", "content": "You are a helpful assistant."},
-                                                  {"role": "user", "content": prompt}
-                                              ],
-                                              max_tokens=500)
-
-    # Extract the response
-    # Make sure you do not return date, hash or any other text other than the version number.
-    extracted_info = response.choices[0].message.content
-    return extracted_info
 
 
 def get_events_from_issue(github_token, owner, repo, issue_number):
