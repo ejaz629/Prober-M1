@@ -118,7 +118,7 @@ Example output:
 For any questions, suggestions, or contributions, feel free to reach out:  
 
 - **Maintainer**: Ejaz Ahmed  
-- **Email**: [ejaz629@gmail.com](mailto:ejaz629@gmail.com)  
+- **Email**: [Ejaz.Ahmed@data61.csiro.au](mailto:Ejaz.Ahmed@data61.csiro.au)  
 
 To report issues, please use the [GitHub Issues](https://github.com/ejaz629/Prober-M1/issues) section.  
 
