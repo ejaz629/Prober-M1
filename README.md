@@ -119,8 +119,6 @@ For any questions, suggestions, or contributions, feel free to reach out:
 
 - **Maintainer**: Ejaz Ahmed  
 - **Email**: [ejaz629@gmail.com](mailto:ejaz629@gmail.com)  
-- **GitHub**: [ejaz629](https://github.com/ejaz629)  
-- **LinkedIn**: [Profile](https://www.linkedin.com/in/ejaz629)  
 
 To report issues, please use the [GitHub Issues](https://github.com/ejaz629/Prober-M1/issues) section.  
 
