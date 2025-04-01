@@ -1,8 +1,8 @@
 class AppConfig:
-    OPENAI_API_KEY = "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"
-    Google_PROJECT_ID = "sw-supply-chain-sec-dev-1184"
-    GEMINI_MODEL = "gemini-1.5-flash-002"
+    OPENAI_API_KEY = <YOUR_OPENAI_API_KEY>
+    Google_PROJECT_ID = <YOUR_Google_PROJECT_ID>
+    GEMINI_MODEL = "gemini-1.5-flash-002" # Your can change to other models from Google as well, however, we have not tested it.
     LOCATION = "australia-southeast1"
-    GITHUB_TOKEN = "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"
+    GITHUB_TOKEN = <YOUR_GITHUB_PAT_TOKEN>
     DICTIONARY_PATTERN = r'\{(?:[^{}]++|(?R))*\}'
     VERSION_PATTERN = r'\d+\.\d+\.\d+'
